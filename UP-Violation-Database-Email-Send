@@ -1,0 +1,107 @@
+Sub SendEmailWithSubjectAndBody()
+
+    Dim OutlookApp As Object
+    Dim OutlookMail As Object
+    Dim wb As Workbook
+    Dim ws As Worksheet
+    Dim emailSubject As String
+    Dim emailBody As String
+    Dim recipient As String
+    Dim lastRow As Long
+    Dim lastColumn As Long
+    Dim i As Long, j As Long
+    Dim filePath As String
+    Dim cellValue As String
+
+    ' Define the path to the Excel file (XLSX format)
+    filePath = "C:\Users\MCJ3MTP\Downloads\RobertBoschUP_ViolationDatabase.xlsx"
+
+    ' Open the Excel file
+    Set wb = Workbooks.Open(filePath)
+    
+    ' Set the worksheet to the specific tab (sheet)
+    On Error Resume Next ' Ignore errors temporarily
+    Set ws = wb.Sheets("External Send") ' Check for the "External Send" sheet
+    
+    ' If the worksheet doesn't exist, display an error and exit the sub
+    If ws Is Nothing Then
+        MsgBox "Sheet 'External Send' not found in the workbook.", vbCritical
+        wb.Close False ' Close the workbook
+        Set wb = Nothing
+        Exit Sub
+    End If
+    On Error GoTo 0 ' Turn off error handling after the check
+
+    ' Define email subject and recipient
+    emailSubject = "Notice of Non-Acquiescence - Fasteners, Inc"
+    recipient = "Jordan.McKay@us.bosch.com"  ' Change to your recipient's email address
+
+    ' Find the last row and last column with data (only up to column I)
+    lastRow = ws.Cells(ws.Rows.Count, 1).End(xlUp).Row
+    lastColumn = 9 ' Only considering columns A to I (Columns 1 to 9)
+
+    ' Apply filter on Column A ("Non-Acquiescence Email") for "TBD"
+    ws.Rows(1).AutoFilter Field:=11, Criteria1:="TBD" ' Column A is field 11
+    
+    ' Apply filter on Column O ("SAP Name") for "Fasteners Inc."
+    ws.Rows(1).AutoFilter Field:=15, Criteria1:="Fasteners Inc." ' Column O is field 15
+
+    ' Start the email body with the opening HTML table tag
+    emailBody = "CurrentDate," & vbCrLf & vbCrLf
+    emailBody = "Dear Toolup," & vbCrLf & vbCrLf
+    emailBody = "The below are examples of potential acts of non-acquiescence with the Robert Bosch Tool Corporation ("Bosch") Unilateral Policy ("UP") that have come to the attention of Bosch. Bosch will consider the alleged non-	acquiescence and inform you of any actions it will take." & vbCrLf & vbCrLf
+
+    emailBody = emailBody & "Here is your requested email with the filtered data from the Excel file:" & vbCrLf & vbCrLf
+    emailBody = emailBody & "<table border='1' cellpadding='5' cellspacing='0'>" & vbCrLf
+
+    ' Add the table header row (column names)
+    emailBody = emailBody & "<tr>"
+    For j = 1 To lastColumn ' Loop through columns A to I
+        emailBody = emailBody & "<th>" & CStr(ws.Cells(1, j).Value) & "</th>" ' Add column headers
+    Next j
+    emailBody = emailBody & "</tr>" & vbCrLf
+
+    ' Loop through each row of data and add it to the table, only for visible (filtered) rows
+    For i = 2 To lastRow ' Start from row 2 to skip the header row
+        ' Check if the row is visible after filtering
+        If ws.Rows(i).Hidden = False Then
+            emailBody = emailBody & "<tr>"
+            For j = 1 To lastColumn ' Only loop through columns A to I
+                ' Get the value of each cell in the range and ensure it's treated as a string
+                cellValue = CStr(ws.Cells(i, j).Value)
+                emailBody = emailBody & "<td>" & cellValue & "</td>" ' Add the cell data to the table
+            Next j
+            emailBody = emailBody & "</tr>" & vbCrLf
+        End If
+    Next i
+    
+    ' Close the table tag
+    emailBody = emailBody & "</table>" & vbCrLf
+
+    ' Add closing text to the email body
+    emailBody = emailBody & "Best regards," & vbCrLf
+
+    emailBody = emailBody & "Jordan McKay"  ' You can replace with your name
+
+    ' Create the Outlook application object
+    Set OutlookApp = CreateObject("Outlook.Application")
+    Set OutlookMail = OutlookApp.CreateItem(0)
+
+    ' Set up the email details
+    With OutlookMail
+        .To = recipient
+        .Subject = emailSubject
+        .HTMLBody = emailBody ' Use HTMLBody to send HTML formatted email
+        .Send ' Sends the email
+    End With
+
+    ' Close the workbook without saving changes
+    wb.Close False
+
+    ' Clean up
+    Set OutlookMail = Nothing
+    Set OutlookApp = Nothing
+    Set ws = Nothing
+    Set wb = Nothing
+
+End Sub
