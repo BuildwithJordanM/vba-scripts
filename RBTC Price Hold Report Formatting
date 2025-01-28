@@ -1,0 +1,70 @@
+
+Sub PriceHoldReport()
+'
+' PriceHoldReport Macro
+'
+
+'
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.Font.Bold = True
+    ActiveWindow.Zoom = 90
+    ActiveWindow.Zoom = 80
+    ActiveWindow.Zoom = 70
+    Columns("R:R").Select
+    Selection.Columns.Group
+    ActiveWindow.LargeScroll Down:=-6
+    Range("Q1").Select
+    Range("R2").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    Selection.ClearContents
+    Range("N1:O1").Select
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .Color = 65535
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    Range("N1").Select
+    ActiveCell.FormulaR1C1 = "Customer Expected Price/BIM"
+    Range("O1").Select
+    ActiveCell.FormulaR1C1 = "Bosch Price/BIM"
+    Range("N1").Select
+    Selection.End(xlToLeft).Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Selection.AutoFilter
+    With Selection
+        .HorizontalAlignment = xlGeneral
+        .VerticalAlignment = xlTop
+        .WrapText = True
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    End With
+    Cells.Select
+    Cells.EntireColumn.AutoFit
+    Range("A1").Select
+    With ActiveWindow
+        .SplitColumn = 0
+        .SplitRow = 1
+    End With
+    ActiveWindow.FreezePanes = True
+    ActiveWindow.Zoom = 80
+    Range("S3").Select
+    Range("A1").Select
+    Cells.Select
+    With Selection
+        .HorizontalAlignment = xlLeft
+        .VerticalAlignment = xlTop
+        .Orientation = 0
+        .AddIndent = False
+        .IndentLevel = 0
+        .ShrinkToFit = False
+        .ReadingOrder = xlContext
+        .MergeCells = False
+    Columns("E:E").EntireColumn.AutoFit
+    End With
+End Sub
