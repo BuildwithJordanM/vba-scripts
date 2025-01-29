@@ -7,14 +7,14 @@ Sub SendEmailWithSubjectAndBody()
     Dim recipient As String
 
     ' Define email subject and recipient
-    emailSubject = "VBA Test Email Sample 1"
-    recipient = "Jordan.McKay@us.bosch.com"  ' Change to your recipient's email address
+    emailSubject = "Automated VBA Email"
+    recipient = "someone@example.com"  ' Replace with actual recipient
 
-    ' Create the email body with just the notes/content you want
+    ' Create the email body
     emailBody = "Hello," & vbCrLf & vbCrLf
-    emailBody = emailBody & "Here is the VBA test email sample 1 with body text only." & vbCrLf & vbCrLf
+    emailBody = emailBody & "This is an automated email sent via VBA." & vbCrLf & vbCrLf
     emailBody = emailBody & "Best regards," & vbCrLf
-    emailBody = emailBody & "Jordan McKay"  ' You can replace with your name
+    emailBody = emailBody & "Your Name"  ' Replace with your name
 
     ' Create the Outlook application object
     Set OutlookApp = CreateObject("Outlook.Application")
@@ -33,3 +33,4 @@ Sub SendEmailWithSubjectAndBody()
     Set OutlookApp = Nothing
 
 End Sub
+
