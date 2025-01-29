@@ -13,75 +13,65 @@ Sub SendEmailWithSubjectAndBody()
     Dim filePath As String
     Dim cellValue As String
 
-    ' Define the path to the Excel file (XLSX format)
-    filePath = "C:\Users\MCJ3MTP\Downloads\RobertBoschUP_ViolationDatabase.xlsx"
+    ' Define the path to the Excel file (replace with a generic path)
+    filePath = "C:\Path\To\Your\File.xlsx"
 
     ' Open the Excel file
     Set wb = Workbooks.Open(filePath)
     
-    ' Set the worksheet to the specific tab (sheet)
-    On Error Resume Next ' Ignore errors temporarily
-    Set ws = wb.Sheets("External Send") ' Check for the "External Send" sheet
+    ' Set the worksheet to the specific tab (replace with a generic name)
+    On Error Resume Next
+    Set ws = wb.Sheets("Sheet1") 
     
     ' If the worksheet doesn't exist, display an error and exit the sub
     If ws Is Nothing Then
-        MsgBox "Sheet 'External Send' not found in the workbook.", vbCritical
-        wb.Close False ' Close the workbook
+        MsgBox "Sheet not found in the workbook.", vbCritical
+        wb.Close False
         Set wb = Nothing
         Exit Sub
     End If
-    On Error GoTo 0 ' Turn off error handling after the check
+    On Error GoTo 0
 
     ' Define email subject and recipient
-    emailSubject = "Notice of Non-Acquiescence - Fasteners, Inc"
-    recipient = "Jordan.McKay@us.bosch.com"  ' Change to your recipient's email address
+    emailSubject = "Policy Compliance Notice"
+    recipient = "someone@example.com"
 
-    ' Find the last row and last column with data (only up to column I)
+    ' Find the last row and last column with data
     lastRow = ws.Cells(ws.Rows.Count, 1).End(xlUp).Row
-    lastColumn = 9 ' Only considering columns A to I (Columns 1 to 9)
+    lastColumn = 9 ' Only considering columns A to I
 
-    ' Apply filter on Column A ("Non-Acquiescence Email") for "TBD"
-    ws.Rows(1).AutoFilter Field:=11, Criteria1:="TBD" ' Column A is field 11
-    
-    ' Apply filter on Column O ("SAP Name") for "Fasteners Inc."
-    ws.Rows(1).AutoFilter Field:=15, Criteria1:="Fasteners Inc." ' Column O is field 15
+    ' Apply filter on a specific column (replace with placeholder criteria)
+    ws.Rows(1).AutoFilter Field:=11, Criteria1:="Placeholder"
+    ws.Rows(1).AutoFilter Field:=15, Criteria1:="Company Name"
 
-    ' Start the email body with the opening HTML table tag
-    emailBody = "CurrentDate," & vbCrLf & vbCrLf
-    emailBody = "Dear Toolup," & vbCrLf & vbCrLf
-    emailBody = "The below are examples of potential acts of non-acquiescence with the Robert Bosch Tool Corporation ("Bosch") Unilateral Policy ("UP") that have come to the attention of Bosch. Bosch will consider the alleged non-	acquiescence and inform you of any actions it will take." & vbCrLf & vbCrLf
-
-    emailBody = emailBody & "Here is your requested email with the filtered data from the Excel file:" & vbCrLf & vbCrLf
+    ' Start the email body
+    emailBody = "Dear Recipient," & vbCrLf & vbCrLf
+    emailBody = "Please find below the requested data from the attached report." & vbCrLf & vbCrLf
     emailBody = emailBody & "<table border='1' cellpadding='5' cellspacing='0'>" & vbCrLf
 
-    ' Add the table header row (column names)
+    ' Add the table header row
     emailBody = emailBody & "<tr>"
-    For j = 1 To lastColumn ' Loop through columns A to I
-        emailBody = emailBody & "<th>" & CStr(ws.Cells(1, j).Value) & "</th>" ' Add column headers
+    For j = 1 To lastColumn
+        emailBody = emailBody & "<th>" & CStr(ws.Cells(1, j).Value) & "</th>"
     Next j
     emailBody = emailBody & "</tr>" & vbCrLf
 
-    ' Loop through each row of data and add it to the table, only for visible (filtered) rows
-    For i = 2 To lastRow ' Start from row 2 to skip the header row
-        ' Check if the row is visible after filtering
+    ' Loop through each row of data and add it to the table
+    For i = 2 To lastRow
         If ws.Rows(i).Hidden = False Then
             emailBody = emailBody & "<tr>"
-            For j = 1 To lastColumn ' Only loop through columns A to I
-                ' Get the value of each cell in the range and ensure it's treated as a string
+            For j = 1 To lastColumn
                 cellValue = CStr(ws.Cells(i, j).Value)
-                emailBody = emailBody & "<td>" & cellValue & "</td>" ' Add the cell data to the table
+                emailBody = emailBody & "<td>" & cellValue & "</td>"
             Next j
             emailBody = emailBody & "</tr>" & vbCrLf
         End If
     Next i
-    
+
     ' Close the table tag
     emailBody = emailBody & "</table>" & vbCrLf
-
-    ' Add closing text to the email body
     emailBody = emailBody & "Best regards," & vbCrLf
-
-    emailBody = emailBody & "Jordan McKay"  ' You can replace with your name
+    emailBody = emailBody & "Your Name"
 
     ' Create the Outlook application object
     Set OutlookApp = CreateObject("Outlook.Application")
@@ -91,8 +81,8 @@ Sub SendEmailWithSubjectAndBody()
     With OutlookMail
         .To = recipient
         .Subject = emailSubject
-        .HTMLBody = emailBody ' Use HTMLBody to send HTML formatted email
-        .Send ' Sends the email
+        .HTMLBody = emailBody
+        .Send
     End With
 
     ' Close the workbook without saving changes
