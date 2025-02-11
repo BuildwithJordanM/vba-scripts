@@ -24,7 +24,3 @@ The main focus of this repository is to:
 3. **Example Usage**:
    - Sample database and VBA macros demonstrating real-world applications.
 
-## How to Use
-1. Clone the repository to your local machine:
-   ```bash
-   git clone https://github.com/your-username/vba-scripts.git
