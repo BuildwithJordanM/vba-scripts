@@ -5,7 +5,7 @@ This repository showcases VBA scripts designed to enhance productivity and autom
 ## Purpose
 The main focus of this repository is to:
 - Generate automated Microsoft Outlook emails with predefined content (body, subject, and recipients).
-- Reference and extract specific information (e.g., rows and columns) from a **Unilateral Pricing Violation Database**.
+- Reference and extract specific information (e.g., rows and columns) from a ** Excel Pricing Violation Database**.
 - Apply filters to display only the current week's violations for effective communication.
 
 ## Key Features
